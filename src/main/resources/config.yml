@@ -1,0 +1,58 @@
+database:
+  host: 'localhost'
+  port: 3306
+  database: 'tags'
+  username: 'plugins'
+  password: 'S3CUR3P4SSW0RD'
+
+gui:
+  tag:
+    # item for normal tags
+    normal:
+      name: '&e%tag_id%'
+      lore:
+      - ''
+      - '&7Preview: %tag_name%'
+      - ''
+      - '&7Status: %status%'
+    # item for tags with an author
+    custom:
+      name: '&#f40733%designer%''s Tag'
+      lore:
+      - '&7Custom tag for %designer%!'
+      - ''
+      - '&eCustom tags available @'
+      - '&a&nstore.servername.com'
+      - ''
+      - '&7Preview: %tag_name%'
+      - ''
+      - '&7Unlocks automatically.'
+  # player skull
+  skull:
+    name: '&c%player_name%'
+    lore:
+    - '&7Current tag: %gtags_tag_else%'
+  # item for next page
+  next:
+    name: '&aNext page'
+    material: 'ARROW'
+    lore:
+    - '&7Move to next page'
+  # item for previous page
+  prev:
+    name: '&aPrevious page'
+    material: 'ARROW'
+    lore:
+    - '&7Move to previous page'
+  close:
+    name: '&cClose menu'
+    material: 'BARRIER'
+    lore: []
+commands:
+  give: 'lp user %player% permission set %tagpermission%'
+  revoke: 'lp user %player% permission unset %tagpermission%'
+messages:
+  no-permission: '&cYou don''t have permissions to use this tag'
+  status:
+    unlocked: '&aUnlocked'
+    locked: '&cLocked'
