@@ -29,7 +29,7 @@ public class TagMenu extends BaseMenu {
     private final Gtags plugin;
 
     public TagMenu(Gtags plugin, Player player, List<Tag> tags) {
-        this(plugin, player, tags, null, 1, tags.size() / TAG_SLOTS.length);
+        this(plugin, player, tags, null, 1, (int) Math.ceil(tags.size() / (double) TAG_SLOTS.length));
     }
 
     private TagMenu(Gtags plugin, Player player, List<Tag> tags, TagMenu previous, int page, int pages) {
