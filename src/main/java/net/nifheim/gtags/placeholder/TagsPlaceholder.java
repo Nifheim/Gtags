@@ -39,17 +39,29 @@ public class TagsPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String params) {
-        if (params.equals("tag")) {
-            Tag tag = tagManager.getTag(player);
-            if (tag != null) {
-                return tag.getDisplayName();
+        switch (params) {
+            case "tag": {
+                Tag tag = tagManager.getTag(player);
+                if (tag != null) {
+                    return tag.getDisplayName();
+                } else {
+                    return "&cNingún tag seleccionado";
+                }
             }
-        } else if (params.equals("tag_else")) {
-            Tag tag = tagManager.getTag(player);
-            if (tag != null) {
-                return tag.getDisplayName();
-            } else {
-                return "&cNingún tag seleccionado";
+            case "tag_empty": {
+                Tag tag = tagManager.getTag(player);
+                if (tag != null) {
+                    return tag.getDisplayName();
+                } else {
+                    return "";
+                }
+            }
+            case "tag_trimmed": {
+                Tag tag = tagManager.getTag(player);
+                if (tag != null) {
+                    return tag.getDisplayName().trim();
+                }
+                break;
             }
         }
         return "";
