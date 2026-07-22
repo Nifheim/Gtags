@@ -47,11 +47,13 @@ gui:
   close:
     name: '&cClose menu'
     material: 'BARRIER'
-    lore: []
+    lore: [ ]
 commands:
   give: 'lp user %player% permission set %tagpermission%'
   revoke: 'lp user %player% permission unset %tagpermission%'
 messages:
+  menu:
+    title: 'Available tags (%current%/%total%)'
   no-permission: '&cYou don''t have permissions to use this tag'
   status:
     unlocked: '&aUnlocked'

@@ -2,9 +2,11 @@ package net.nifheim.gtags;
 
 import java.io.IOException;
 import net.nifheim.bukkit.commandlib.CommandAPI;
+import net.nifheim.bukkit.menulib.MenuLibrary;
 import net.nifheim.gtags.database.TagDatabase;
 import net.nifheim.gtags.listener.PlayerListener;
 import net.nifheim.gtags.manager.TagManager;
+import net.nifheim.gtags.menu.MenuRegistry;
 import net.nifheim.gtags.menu.TagMenu;
 import net.nifheim.gtags.placeholder.TagsPlaceholder;
 import org.bukkit.Bukkit;
@@ -35,18 +37,25 @@ public final class Gtags extends JavaPlugin {
         tagManager = new TagManager(this, tagDatabase);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         new TagsPlaceholder(tagManager).register();
+        new MenuLibrary(this);
         CommandAPI.registerCommand(this, new Command("tags") {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    new TagMenu(Gtags.this, player, tagManager.getAllTags()).open(player);
+                    MenuRegistry.getMenu(player.getUniqueId(), 1, () -> new TagMenu(Gtags.this, player, tagManager.getAllTags())).open(player);
                 }
                 return true;
             }
         });
         for (Player player : Bukkit.getOnlinePlayers()) {
             tagManager.loadSelectedTag(player);
+            player.updateCommands();
+        }
+        try {
+            Class.forName("org.bukkit.craftbukkit.v1_19_R1.CraftServer").getMethod("syncCommands").invoke(Bukkit.getServer());
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
     }
 

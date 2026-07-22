@@ -12,7 +12,7 @@
     <name>GTags</name>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -30,7 +30,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -39,6 +39,16 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.nifheim.bukkit.commandlib</pattern>
+                                    <shadedPattern>net.nifheim.gtags.lib.command</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.nifheim.bukkit.menulib</pattern>
+                                    <shadedPattern>net.nifheim.gtags.lib.menu</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -69,9 +79,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -81,9 +91,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.32</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>3.0.2</version>
+            <version>3.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -96,13 +112,13 @@
             <groupId>net.nifheim</groupId>
             <artifactId>commandlib</artifactId>
             <version>1.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.nifheim</groupId>
-            <artifactId>coreutils</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <artifactId>menulib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

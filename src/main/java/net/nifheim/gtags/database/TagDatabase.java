@@ -29,12 +29,12 @@ import org.bukkit.Bukkit;
  */
 public class TagDatabase implements Closeable {
 
-    private static final String SELECT_TAG_BY_NAME = "SELECT name, displayName, lore, permission, designer_id, BIN_TO_UUID(uniqueId, TRUE) AS uniqueId, username FROM tags LEFT JOIN designer USING (designer_id) WHERE name = ?;";
-    private static final String SELECT_SELECTED_TAG = "SELECT name, displayName, lore, permission, designer_id, username, BIN_TO_UUID(designer.uniqueId, TRUE) as uniqueId  FROM selected JOIN tags USING (name) LEFT JOIN designer USING (designer_id) WHERE selected.uniqueId = UUID_TO_BIN(?, TRUE);";
-    private static final String SELECT_ALL_TAGS = "SELECT name, displayName, lore, permission, designer_id, username, BIN_TO_UUID(uniqueId, TRUE) AS uniqueId FROM tags LEFT JOIN designer USING (designer_id) ORDER BY designer_id;";
+    private static final String SELECT_TAG_BY_NAME = "SELECT name, displayName, lore, permission, designer_id, uniqueId, username FROM tags LEFT JOIN designer USING (designer_id) WHERE name = ?;";
+    private static final String SELECT_SELECTED_TAG = "SELECT name, displayName, lore, permission, designer_id, username, designer.uniqueId as uniqueId  FROM selected JOIN tags USING (name) LEFT JOIN designer USING (designer_id) WHERE selected.uniqueId = ?;";
+    private static final String SELECT_ALL_TAGS = "SELECT name, displayName, lore, permission, designer_id, username, uniqueId AS uniqueId FROM tags LEFT JOIN designer USING (designer_id) ORDER BY designer_id;";
     private static final String UPDATE_TAG = "UPDATE tags SET displayName = ?, permission = ? WHERE name = ?;";
     private static final String INSERT_TAG = "INSERT INTO tags VALUES (?, ?, ?, ?);";
-    private static final String SET_PLAYER_TAG = "INSERT INTO selected VALUES (UUID_TO_BIN(?, TRUE), ?) ON DUPLICATE KEY UPDATE name = ?;";
+    private static final String SET_PLAYER_TAG = "INSERT INTO selected VALUES (?, ?) ON DUPLICATE KEY UPDATE name = ?;";
     private final HikariDataSource dataSource;
     private final Executor executor;
 
@@ -131,9 +131,14 @@ public class TagDatabase implements Closeable {
     public CompletableFuture<Boolean> setTag(UUID uniqueId, Tag tag) {
         return CompletableFuture.supplyAsync(() -> {
             try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SET_PLAYER_TAG)) {
-                preparedStatement.setString(1, uniqueId.toString());
-                preparedStatement.setString(2, tag.getName());
-                preparedStatement.setString(3, tag.getName());
+                preparedStatement.setString(2, uniqueId.toString());
+                if (tag != null) {
+                    preparedStatement.setString(1, tag.getName());
+                    preparedStatement.setString(3, tag.getName());
+                } else {
+                    preparedStatement.setNull(1, Types.VARCHAR);
+                    preparedStatement.setNull(3, Types.VARCHAR);
+                }
                 return preparedStatement.executeUpdate() > 0;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -156,12 +161,6 @@ public class TagDatabase implements Closeable {
             }
             return null;
         }, executor);
-    }
-
-    public CompletableFuture<Set<Tag>> getLoadedTags(UUID uniqueId) {
-        //return tagsMap.get(uniqueId);
-        // TODO: check
-        return null;
     }
 
     @Override

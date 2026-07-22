@@ -3,12 +3,9 @@ version: ${project.version}
 main: net.nifheim.gtags.Gtags
 api-version: 1.13
 database: true
-depend:
-- CommandLib
-- CoreUtils
-softdepend:
-- Matrix
 libraries:
 - com.zaxxer:HikariCP:5.0.0
-- org.mariadb.jdbc:mariadb-java-client:2.7.3
-- com.github.ben-manes.caffeine:caffeine:3.0.2
+- org.slf4j:slf4j-api:1.7.32
+- org.slf4j:slf4j-nop:1.7.32
+- org.mariadb.jdbc:mariadb-java-client:2.7.4
+- com.github.ben-manes.caffeine:caffeine:3.0.4

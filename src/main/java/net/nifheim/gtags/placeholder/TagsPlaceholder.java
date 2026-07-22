@@ -52,9 +52,8 @@ public class TagsPlaceholder extends PlaceholderExpansion {
                 Tag tag = tagManager.getTag(player);
                 if (tag != null) {
                     return tag.getDisplayName();
-                } else {
-                    return "";
                 }
+                break;
             }
             case "tag_trimmed": {
                 Tag tag = tagManager.getTag(player);
@@ -62,6 +61,18 @@ public class TagsPlaceholder extends PlaceholderExpansion {
                     return tag.getDisplayName().trim();
                 }
                 break;
+            }
+            case "tags_total": {
+                return String.valueOf(tagManager.getAllTags().size());
+            }
+            case "tags_unlocked": {
+                int count = 0;
+                for (Tag tag : tagManager.getAllTags()) {
+                    if (tag.isUnlocked(player)) {
+                        count++;
+                    }
+                }
+                return String.valueOf(count);
             }
         }
         return "";

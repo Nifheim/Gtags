@@ -8,13 +8,15 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.nifheim.bukkit.util.SkullCreator;
 import net.nifheim.gtags.Gtags;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,6 +87,13 @@ public class Tag {
         return designer;
     }
 
+    public boolean isUnlocked(Player player) {
+        if (designer == null) {
+            return player.hasPermission(permission);
+        }
+        return designer.getUniqueId().equals(player.getUniqueId());
+    }
+
     public ItemStack getItem(FileConfiguration configuration, Player player) {
         Component name;
         List<String> lore = new ArrayList<>(this.lore);
@@ -93,7 +102,13 @@ public class Tag {
         if (designer != null) {
             name = replace(configuration.getString("gui.tag.custom.name", ""), player);
             lore.addAll(configuration.getStringList("gui.tag.custom.lore"));
-            itemStack = SkullCreator.itemFromUuid(designer.getUniqueId());
+            itemStack = new ItemStack(Material.PLAYER_HEAD);
+            OfflinePlayer owning = Bukkit.getOfflinePlayerIfCached(designer.getName());
+            if (owning != null) {
+                SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+                skullMeta.setOwningPlayer(owning);
+                itemStack.setItemMeta(skullMeta);
+            }
         } else {
             name = replace(configuration.getString("gui.tag.normal.name", ""), player);
             lore.addAll(configuration.getStringList("gui.tag.normal.lore"));
